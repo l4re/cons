@@ -668,6 +668,20 @@ Controller::cmd_grep(Mux *mux, int argc, Arg *a)
         continue;
 
       Client::Buf const *b = v->wbuf();
+
+      if (b->empty())
+        {
+          // Nothing buffered. The scan below would walk the whole uninitialized
+          // buffer looking for its start again.
+          if (opt_count)
+            {
+              if (!given_client)
+                mux->printf("%s:", v->tag().c_str());
+              mux->printf("0\n");
+            }
+          continue;
+        }
+
       Client::Buf::Index end = b->head();
 
       enum { Flag_none = 0, Flag_print = 1 << 0, Flag_match = 1 << 1, };
