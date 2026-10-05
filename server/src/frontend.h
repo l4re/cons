@@ -21,7 +21,7 @@ public:
   virtual bool check_input() = 0;
 
 protected:
-  Input_mux *_input;
+  Input_mux *_input = nullptr;
 };
 
 inline Frontend::~Frontend() {}

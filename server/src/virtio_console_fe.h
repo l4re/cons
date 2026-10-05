@@ -55,6 +55,9 @@ public:
 
   void rx_data_available(unsigned) override
   {
+    if (!_input)
+      return;
+
     unsigned s = 0;
     do
       {
