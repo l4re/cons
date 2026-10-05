@@ -300,7 +300,7 @@ Cons_svr::op_create(L4::Factory::Rights, L4::Ipc::Cap<void> &obj,
             _muxe.front()->show(v);
 
           if (keep)
-            v->keep(v);
+            v->keep(true);
 
           v->timestamp(timestamp);
 
