@@ -80,7 +80,7 @@ Client::do_output(Buf::Index until)
 }
 
 void
-Client::cooked_write(const char *buf, long size) throw()
+Client::cooked_write(const char *buf, long size) noexcept
 {
   if (size < 0)
     size = strlen(buf);

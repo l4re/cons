@@ -390,7 +390,7 @@ public:
   int write(char const *buf)
   { return write(buf, strlen(buf)); }
 
-  void cooked_write(const char *buf, long size = -1) throw();
+  void cooked_write(const char *buf, long size = -1) noexcept;
 
   void skip_unwritten()
   { _first_unwritten = wbuf()->head(); }
