@@ -85,15 +85,15 @@ public:
         return *this;
       }
 
-      Index operator + (int v)
+      Index operator + (int v) const
       {
-        int n = i + v;
-        if (n > _b->_bufsz || n < 0)
-          n %= _b->_bufsz;
+        int n = (i + v) % _b->_bufsz;
+        if (n < 0)
+          n += _b->_bufsz;
         return Index(n, _b);
       }
 
-      Index operator - (int v)
+      Index operator - (int v) const
       {
         return this->operator+(-v);
       }
