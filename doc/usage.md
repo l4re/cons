@@ -118,7 +118,7 @@ cons accepts the following command line switches:
   should be sent to different frontends. This option must be used in conjunction
   with the `-f` frontend option
 
-* `-n`, `--defaultname`
+* `-n <name>`, `--defaultname <name>`
 
   Default name for the multiplexer prompt. Default: `cons`.
 
@@ -152,9 +152,14 @@ cons accepts the following per-client options:
 
   Assign `<key>` as keyboard shortcut to this client.
 
-* `line-buffering` / `no-linux-buffering`
+* `line-buffering` / `no-line-buffering`
 
   Line buffering is enabled / disabled for this client.
+
+* `line-buffered-ms=<timeout>`
+
+  Timeout in milliseconds before buffered output of this client is written
+  even without a newline, deviating from the `--line-buffering-ms` default.
 
 * `show` / `hide`
 
