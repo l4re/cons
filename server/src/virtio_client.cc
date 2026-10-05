@@ -26,7 +26,6 @@ Virtio_cons::handle_tx()
 void
 Virtio_cons::handle_rx()
 {
-  l4_uint32_t total = 0;
   char const *d = 0;
   unsigned rs = rbuf()->get(0, &d);
   if (!rs)
@@ -46,8 +45,17 @@ Virtio_cons::handle_rx()
   for (;;)
     {
       auto r = q.next_avail();
+      if (!r)
+        {
+          // No receive buffer posted by the driver. Drop what was already
+          // handed over and keep the rest queued for the next kick, otherwise
+          // it would be delivered a second time.
+          rbuf()->clear(rs - src.left);
+          return;
+        }
+
+      l4_uint32_t total = 0;
       h = p.start(mem_info(), r, &b);
-      total = 0;
       for (;;)
         {
           total += src.copy_to(&b);
@@ -72,19 +80,23 @@ Virtio_cons::handle_rx()
             }
         }
     }
-
-  if (h)
-    q.finish(h, this, total);
 }
-
-
 
 void
 Virtio_cons::kick()
 {
-  if (L4_LIKELY(_q[Tx].ready()))
-    handle_tx();
+  try
+    {
+      if (L4_LIKELY(_q[Tx].ready()))
+        handle_tx();
 
-  if (L4_LIKELY(_q[Rx].ready()))
-    handle_rx();
+      if (L4_LIKELY(_q[Rx].ready()))
+        handle_rx();
+    }
+  catch (L4virtio::Svr::Bad_descriptor const &e)
+    {
+      printf("cons: bad virtio descriptor from '%s': %s\n",
+             tag().c_str(), e.message());
+      device_error();
+    }
 }
