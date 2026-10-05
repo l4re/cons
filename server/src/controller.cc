@@ -585,10 +585,11 @@ Controller::complete_console_name_grep(Mux *mux, unsigned, unsigned argnr,
         {
           auto sorted = clients;
           std::sort(sorted.begin(), sorted.end(),
-                    [](const Client_ptr a, const Client_ptr b) {
+                    [](const Client_ptr a, const Client_ptr b)
+                    {
                       return a->tag().compare(b->tag()) < 0;
-                    } );
-          Client_name_iter cl(&clients);
+                    });
+          Client_name_iter cl(&sorted);
           return complete(mux, arg[i].a, &cl, completed_arg);
         }
     }
