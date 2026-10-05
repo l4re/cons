@@ -40,19 +40,6 @@ void Pbuf::checknflush(int n)
     _p += n;
 }
 
-void Pbuf::printf(char const *fmt, ...)
-{
-  if (!fits(strlen(fmt) + 50))
-    flush();
-  int n;
-  va_list arg;
-  va_start(arg, fmt);
-  n = vsnprintf(_b + _p, size() - _p, fmt, arg);
-  va_end(arg);
-  if (n > 0)
-    checknflush(std::min<unsigned long>(n, size() - _p));
-}
-
 void Pbuf::outnstring(char const *str, unsigned long len)
 {
   assert(len <= size());
@@ -132,9 +119,9 @@ Mux_i::write_tag(Client *client)
     ob.outnstring("             ", _tag_len - n.size());
 
   if (client->output_line_preempted())
-    ob.printf(": ");
+    ob.outstring(": ");
   else
-    ob.printf("| ");
+    ob.outstring("| ");
 }
 
 void
@@ -154,7 +141,7 @@ Mux_i::write(Client *client, const char *msg, unsigned len_msg)
       && _last_output_client->output_line_preempted()
       && _last_output_client->color()
       && tagged)
-    ob.printf("\033[0m");
+    ob.outstring("\033[0m");
 
   int input_check_cnt = 0;
   while (len_msg > 0 && msg[0])
@@ -162,12 +149,17 @@ Mux_i::write(Client *client, const char *msg, unsigned len_msg)
       if (_last_output_client != client)
         {
           if (tagged && color)
-            ob.printf("\033[%s3%dm", (color & 8) ? "01;" : "", (color & 7));
+            {
+              char sgr[8] = "\033[0;30m";
+              sgr[2] = '0' + ((color & 8) >> 3);
+              sgr[5] = '0' + (color & 7);
+              ob.outstring(sgr);
+            }
           else
-            ob.printf("\033[0m");
+            ob.outstring("\033[0m");
 
           if (_last_output_client)
-            ob.printf("\r\n");
+            ob.outstring("\r\n");
 
           if (tagged)
             write_tag(client);
@@ -183,9 +175,9 @@ Mux_i::write(Client *client, const char *msg, unsigned len_msg)
       if (i < (long)len_msg && msg[i] == '\n')
         {
           if (tagged && color)
-            ob.printf("\033[0m\n");
+            ob.outstring("\033[0m\n");
           else
-            ob.printf("\n");
+            ob.outstring("\n");
           client->output_line_done();
           _last_output_client = nullptr;
           ++i;
@@ -205,7 +197,7 @@ Mux_i::write(Client *client, const char *msg, unsigned len_msg)
           for (auto const &i : _fe)
             if (i->check_input())
               {
-                ob.printf("[Got input, stopping output.]\n");
+                ob.outstring("[Got input, stopping output.]\n");
                 return;
               }
           input_check_cnt = 0;

@@ -28,8 +28,11 @@ public:
   explicit Pbuf(Sink *sink) : _p(0), _sink(sink) {}
   unsigned long size() const { return sizeof(_b); }
   void flush();
-  void printf(char const *fmt, ...) __attribute__((format(printf, 2, 3)));
   void outnstring(char const *str, unsigned long len);
+
+  template<unsigned N> constexpr
+  void outstring(const char(&str)[N])
+  { outnstring(str, N - 1); }
 
 private:
   bool fits(unsigned l) const { return (_p + l) < sizeof(_b); }
