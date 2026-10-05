@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <cassert>
 
+#include <l4/cxx/minmax>
+
 void Pbuf::flush()
 {
   _sink->write(_b, _p);
@@ -218,6 +220,7 @@ Mux_i::vprintf(const char *fmt, va_list args)
 {
   char buffer[1024];
   int n = vsnprintf(buffer, sizeof(buffer), fmt, args);
+  n = cxx::min<int>(n, sizeof(buffer) - 1);
   if (n > 0)
     _self_client->cooked_write(buffer, n);
   return n;
@@ -239,6 +242,7 @@ Mux_i::vsys_msg(const char *fmt, va_list args)
   buffer[0] = '\n';
 
   int n = vsnprintf(buffer + 1, sizeof(buffer) - 1, fmt, args);
+  n = cxx::min<int>(n, sizeof(buffer) - 2);
   if (n > 0)
     {
       _self_client->cooked_write(buffer, n+1);
