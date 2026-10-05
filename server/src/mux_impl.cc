@@ -75,7 +75,7 @@ public:
 
 Mux_i::Mux_i(Controller *ctl, char const *name)
 : _fe(), _self_client(new Mux_client(this)),
-  ob(this), _last_output_client(0),
+  ob(this), _last_output_client(nullptr),
   _connected(_self_client), _pre_connect_output(nullptr), _tag_len(8), _ctl(ctl),
   _name(name), _seq_str("[Ctrl-E]")
 {
@@ -166,7 +166,7 @@ Mux_i::write(Client *client, const char *msg, unsigned len_msg)
           else
             ob.printf("\033[0m");
 
-          if (_last_output_client != 0)
+          if (_last_output_client)
             ob.printf("\r\n");
 
           if (tagged)
@@ -187,7 +187,7 @@ Mux_i::write(Client *client, const char *msg, unsigned len_msg)
           else
             ob.printf("\n");
           client->output_line_done();
-          _last_output_client = 0;
+          _last_output_client = nullptr;
           ++i;
         }
       else
