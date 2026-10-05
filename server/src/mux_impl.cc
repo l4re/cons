@@ -67,7 +67,7 @@ public:
   Mux_client(Mux *mux) : Client("CONS", 0, 512, 512, Key(), false, 0, nullptr,
                                 nullptr)
   { output_mux(mux); }
-  void trigger() const {}
+  void trigger() const override {}
 };
 }
 

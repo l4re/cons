@@ -97,7 +97,7 @@ class Cons_svr : public L4::Epiface_t<Cons_svr, L4::Factory, Server_object>
 public:
   explicit Cons_svr(const char *name);
 
-  bool collected() { return false; }
+  bool collected() override { return false; }
 
   template< typename CLI >
   int create(std::string const &tag, int color, CLI **, size_t bufsz,

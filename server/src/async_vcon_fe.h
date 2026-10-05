@@ -13,7 +13,7 @@ class Async_vcon_fe : public Vcon_fe_base
 {
 public:
   Async_vcon_fe(L4::Cap<L4::Vcon> con, L4Re::Util::Object_registry *r);
-  int write(char const *buf, unsigned sz);
+  int write(char const *buf, unsigned sz) override;
 
 private:
   static void *_setup(void *);
