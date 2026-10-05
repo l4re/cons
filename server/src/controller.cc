@@ -97,6 +97,22 @@ Controller::remove_client(Client_ptr client)
         clients.erase(it);
         break;
       }
+
+  // A mux may still refer to the client even though the client is not connected
+  // to it and thus was not covered by ~Client()'s disconnect().
+  for (auto const m : _muxes)
+    m->client_removed(client);
+}
+
+void
+Controller::remove_mux(Mux *mux)
+{
+  for (auto it = _muxes.begin(); it != _muxes.end(); ++it)
+    if (mux == *it)
+      {
+        _muxes.erase(it);
+        break;
+      }
 }
 
 Client *

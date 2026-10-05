@@ -66,6 +66,8 @@ Mux_i::Mux_i(Controller *ctl, char const *name)
   _connected(_self_client), _pre_connect_output(nullptr), _tag_len(8), _ctl(ctl),
   _name(name), _seq_str("[Ctrl-E]")
 {
+  if (_ctl)
+    _ctl->add_mux(this);
 }
 
 void
@@ -270,6 +272,17 @@ Mux_i::disconnect(Client *client, bool show_prompt)
   client->output_mux(_pre_connect_output);
   if (show_prompt)
     prompt();
+}
+
+void
+Mux_i::client_removed(Client *client)
+{
+  // Do not touch the client, it is being destructed. Just forget it.
+  if (_connected == client)
+    _connected = _self_client;
+
+  if (_last_output_client == client)
+    _last_output_client = nullptr;
 }
 
 void

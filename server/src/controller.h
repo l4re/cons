@@ -7,6 +7,8 @@
  */
 #pragma once
 
+#include <vector>
+
 #include "frontend.h"
 #include "client.h"
 #include "mux.h"
@@ -110,5 +112,10 @@ public:
 
   Client_list clients;
 
+  void add_mux(Mux *mux) { _muxes.push_back(mux); }
+  void remove_mux(Mux *mux);
   void remove_client(Client_ptr client);
+
+private:
+  std::vector<Mux *> _muxes;
 };

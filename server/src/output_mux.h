@@ -28,6 +28,15 @@ public:
   virtual void hide(Client *c) = 0;
   virtual void connect(Client *c) = 0;
   virtual void disconnect(Client *c, bool show_prompt = true) = 0;
+
+  /**
+   * Drop all references to a client that is about to go away.
+   *
+   * Unlike disconnect() this is called for every client, no matter whether it
+   * is connected, merely shown or hidden.
+   */
+  virtual void client_removed(Client *c) = 0;
+
   virtual ~Output_mux() = 0;
 };
 

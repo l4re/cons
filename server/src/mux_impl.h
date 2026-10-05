@@ -47,7 +47,12 @@ class Mux_i : public Mux, private Pbuf::Sink
 {
 public:
   explicit Mux_i(Controller *ctl, char const *name);
-  ~Mux_i() { delete _self_client; }
+  ~Mux_i()
+  {
+    if (_ctl)
+      _ctl->remove_mux(this);
+    delete _self_client;
+  }
 
   void write_tag(Client *client);
   void write(Client *tag, const char *msg, unsigned len_msg) override;
@@ -60,6 +65,7 @@ public:
   void hide(Client *c) override;
   void connect(Client *client) override;
   void disconnect(Client *client, bool show_prompt = true) override;
+  void client_removed(Client *client) override;
 
   void input(cxx::String const &buf) override;
   void add_frontend(Frontend *f) override;
