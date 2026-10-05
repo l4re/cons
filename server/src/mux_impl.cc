@@ -495,7 +495,15 @@ Mux_i::handle_prompt_input(cxx::String const &buf)
                           ++_inp.esc.in_seq; break;
                 case '6': _inp.esc.key = Mux_input_buf::Esc::Page_down;
                           ++_inp.esc.in_seq; break;
-                default: if (0) printf("Ukn-%c-\n", buf[i]); break;
+                default:
+                  if constexpr (0)
+                    printf("Ukn-%c-\n", buf[i]);
+                  // A CSI sequence runs until its final byte (0x40-0x7e);
+                  // everything before that is a parameter or intermediate
+                  // byte.
+                  if (buf[i] >= 0x40 && buf[i] <= 0x7e)
+                    _inp.esc.in_seq = 0;
+                  break;
                 };
             }
           else if (_inp.esc.in_seq == 3)
