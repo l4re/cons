@@ -1,8 +1,5 @@
 #include "virtio_client.h"
 
-unsigned Virtio_cons::_dfl_obufsz = Virtio_cons::Default_obuf_size;
-
-
 void
 Virtio_cons::handle_tx()
 {

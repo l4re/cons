@@ -9,8 +9,6 @@
 #include <l4/sys/typeinfo_svr>
 #include <l4/cxx/minmax>
 
-unsigned Vcon_client::_dfl_obufsz = Vcon_client::Default_obuf_size;
-
 void
 Vcon_client::vcon_write(const char *buf, unsigned size) noexcept
 { cooked_write(buf, size); }

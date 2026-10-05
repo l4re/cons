@@ -50,9 +50,6 @@ private:
   L4virtio::Svr::Virtqueue _q[2];
   L4Re::Util::Unique_cap<L4::Irq> kick_guest_irq;
 
-  enum { Default_obuf_size = 40960 };
-  static unsigned _dfl_obufsz;
-
   enum { Max_desc = 0x100 };
 
 public:
@@ -61,7 +58,7 @@ public:
               L4Re::Util::Object_registry *r, L4::Ipc_svr::Server_iface *sif,
               Controller *ctl)
   : L4virtio::Svr::Device(&_dev_config),
-    Client(name, color, 512, bufsz < 512 ? _dfl_obufsz : bufsz, key,
+    Client(name, color, 512, obuf_size(bufsz), key,
            line_buffering, line_buffering_ms, sif, ctl),
     _host_irq(this),
     _dev_config(0x44, L4VIRTIO_ID_CONSOLE, 0x20, 2)
@@ -140,11 +137,6 @@ public:
   void handle_tx();
   void handle_rx();
   void trigger() const override { const_cast<Virtio_cons*>(this)->kick(); }
-
-  static void default_obuf_size(unsigned bufsz)
-  {
-    _dfl_obufsz = cxx::max(512U, cxx::min(16U << 20, bufsz));
-  }
 
   Server_iface *server_iface() const override
   { return Server_object::server_iface(); }

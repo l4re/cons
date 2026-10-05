@@ -60,7 +60,8 @@ cons accepts the following command line switches:
 
 * `-B <size>`, `--defaultbufsize <size>`
 
-  Default buffer size per client in bytes. Default: 40960
+  Default buffer size per client in bytes, for clients that do not request a
+  size of their own. Clamped to the range 512 to 16 MiB. Default: 40960.
 
 * `-c <client>`, `--autoconnect <client>`
 
@@ -142,7 +143,8 @@ cons accepts the following per-client options:
 * `bufsz=n`
 
   Use a buffer of `n` bytes for this client, deviating from the default
-  buffer size.
+  buffer size.  Values below 512 mean 'no preference' and select the default
+  size, larger values are capped at 16 MiB.
 
 * `keep` / `no-keep`
 

@@ -17,6 +17,7 @@
 
 #include <cstring>
 #include <l4/cxx/string>
+#include <l4/cxx/minmax>
 
 #include <vector>
 
@@ -350,6 +351,41 @@ public:
     }
   };
 
+  enum
+  {
+    /// Below this a client is considered to have no size preference.
+    Min_obuf_size     = 512,
+    /// Size used for clients without a preference, unless changed via -B.
+    Default_obuf_size = 40960,
+    /// Upper limit for a client-requested size.
+    Max_obuf_size     = 16U << 20,
+  };
+
+  /**
+   * Set the output buffer size used for clients that do not request one.
+   */
+  static void default_obuf_size(unsigned bufsz)
+  {
+    _dfl_obufsz = cxx::max<unsigned>(Min_obuf_size,
+                                     cxx::min<unsigned>(Max_obuf_size, bufsz));
+  }
+
+  /**
+   * Turn a client-supplied buffer size into a usable one.
+   *
+   * The requested size comes straight off the wire and ends up as the size of
+   * a heap allocation and as an `int` ring index, so it must be capped. A
+   * request below Min_obuf_size means 'no preference' and yields the
+   * configured default.
+   */
+  static unsigned obuf_size(size_t bufsz)
+  {
+    if (bufsz < Min_obuf_size)
+      return _dfl_obufsz;
+
+    return cxx::min<size_t>(bufsz, Max_obuf_size);
+  }
+
   Client() = delete;
   Client(std::string const &tag, int color, int rsz, int wsz, Key key,
          bool line_buffering, unsigned line_buffering_ms,
@@ -399,6 +435,8 @@ public:
   int idx = 0;
 
 private:
+  static unsigned _dfl_obufsz;
+
   int _col;
   std::string _tag;
   bool _p = false;

@@ -30,7 +30,7 @@ public:
               L4Re::Util::Object_registry *, L4::Ipc_svr::Server_iface *sif,
               Controller *ctl)
   : Icu_svr(1, &_irq),
-    Client(name, color, 512, bufsz < 512 ? _dfl_obufsz : bufsz, key,
+    Client(name, color, 512, obuf_size(bufsz), key,
            line_buffering, line_buffering_ms, sif, ctl)
   {}
 
@@ -46,13 +46,6 @@ public:
 
   bool collected() override { return Client::collected(); }
 
-  static void default_obuf_size(unsigned bufsz)
-  {
-    _dfl_obufsz = cxx::max(512U, cxx::min(16U << 20, bufsz));
-  }
-
 private:
-  enum { Default_obuf_size = 40960 };
-  static unsigned _dfl_obufsz;
   Icu_svr::Irq _irq;
 };

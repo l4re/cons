@@ -15,6 +15,8 @@
 #include <cstring>
 #include <time.h>
 
+unsigned Client::_dfl_obufsz = Client::Default_obuf_size;
+
 template<typename Client>
 void
 Client_timeout<Client>::expired()

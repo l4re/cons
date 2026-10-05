@@ -445,7 +445,7 @@ int main(int argc, char const *argv[])
           default_name = optarg;
           break;
         case OPT_DEFAULT_BUFSIZE:
-          Vcon_client::default_obuf_size(atoi(optarg));
+          Client::default_obuf_size(atoi(optarg));
           break;
         case OPT_NO_LINE_BUFFERING:
           config.default_line_buffering = false;
