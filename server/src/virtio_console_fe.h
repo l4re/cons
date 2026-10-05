@@ -56,12 +56,13 @@ public:
   void rx_data_available(unsigned) override
   {
     unsigned s = 0;
-    char buf[64];
     do
       {
-        s = port_read(buf, 64);
+        char buf[64];
+        s = port_read(buf, sizeof(buf));
         _input->input(cxx::String(buf, s));
-      } while (s > 0);
+      }
+    while (s > 0);
   }
 
   void tx_space_available(unsigned) override
