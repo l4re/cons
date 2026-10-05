@@ -242,7 +242,7 @@ public:
      */
     int get(int offset, char const **d) const
     {
-      if (offset < 0 || (unsigned)offset >= _sum_bytes)
+      if (offset < 0 || offset >= distance())
         return 0;
 
       offset = (_tail + offset) % _bufsz;
@@ -288,9 +288,10 @@ public:
       return (end.i + _bufsz) - start.i;
     }
 
+    /// Drop the first `l` bytes from the buffer, at most all of them.
     void clear(int l)
     {
-      if (distance() >= _bufsz)
+      if (l >= distance())
         _tail = _head;
       else
         _tail = (_tail + l) % _bufsz;
