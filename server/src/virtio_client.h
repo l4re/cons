@@ -50,6 +50,8 @@ private:
   L4virtio::Svr::Virtqueue _q[2];
   L4Re::Util::Unique_cap<L4::Irq> kick_guest_irq;
 
+  L4Re::Util::Object_registry *_registry;
+
   enum { Max_desc = 0x100 };
 
 public:
@@ -61,7 +63,8 @@ public:
     Client(name, color, 512, obuf_size(bufsz), key,
            line_buffering, line_buffering_ms, sif, ctl),
     _host_irq(this),
-    _dev_config(0x44, L4VIRTIO_ID_CONSOLE, 0x20, 2)
+    _dev_config(0x44, L4VIRTIO_ID_CONSOLE, 0x20, 2),
+    _registry(r)
   {
     reset_queue_config(0, Max_desc);
     reset_queue_config(1, Max_desc);
@@ -70,6 +73,11 @@ public:
     _attr.l_flags = 0;
     _attr.i_flags = 0;
     _attr.o_flags = 0;
+  }
+
+  ~Virtio_cons()
+  {
+    _registry->unregister_obj(&_host_irq);
   }
 
   void register_single_driver_irq() override
