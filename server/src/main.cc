@@ -198,13 +198,13 @@ Cons_svr::op_create(L4::Factory::Rights, L4::Ipc::Cap<void> &obj,
 
           L4::Ipc::Varg tag = args.pop_front();
 
-          if (!tag.is_of<char const *>())
+          if (!tag.is_of<char const *>() || tag.length() < 1)
             return -L4_EINVAL;
 
           L4::Ipc::Varg col = args.pop_front();
 
           int color;
-          if (col.is_of<char const *>())
+          if (col.is_of<char const *>() && col.length() >= 1)
             {
               cxx::String cs(col.value<char const*>(), col.length() - 1);
 
@@ -233,7 +233,7 @@ Cons_svr::op_create(L4::Factory::Rights, L4::Ipc::Cap<void> &obj,
           else
             color = 7;
 
-          // length() > 0 for a valid string parameter
+          // length() >= 1 checked above
           std::string ts(tag.value<char const*>(), tag.length() - 1);
 
           bool show = config.default_show_all;
@@ -246,7 +246,7 @@ Cons_svr::op_create(L4::Factory::Rights, L4::Ipc::Cap<void> &obj,
 
           for (L4::Ipc::Varg opts: args)
             {
-              if (opts.is_of<char const *>())
+              if (opts.is_of<char const *>() && opts.length() >= 1)
                 {
                   cxx::String cs(opts.value<char const *>(), opts.length() - 1);
 
