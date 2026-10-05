@@ -120,8 +120,6 @@ private:
   };
 
 
-  void w(const char *s) const { write(s, strlen(s)); }
-
   void prompt() const;
 
   void handle_prompt_input(cxx::String const &buf);
@@ -145,6 +143,10 @@ private:
           l += r;
         }
   }
+
+  template<unsigned N> constexpr
+  void write(const char(&str)[N])
+  { write(str, N - 1); }
 
   Fe_list _fe;
 

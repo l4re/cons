@@ -552,7 +552,7 @@ Mux_i::handle_prompt_input(cxx::String const &buf)
             case 10:
               break;
             case 13:
-              w("\r\n");
+              write("\r\n");
               _ctl->cmd(this, _inp.string());
               _inp.clear();
               if (!is_connected())
@@ -561,7 +561,7 @@ Mux_i::handle_prompt_input(cxx::String const &buf)
             case 127: // BS
               if (_inp.p)
                 {
-                  w("\b \b");
+                  write("\b \b");
                   --_inp.p;
                 }
               break;
