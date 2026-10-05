@@ -202,8 +202,7 @@ Mux_i::write(Client *client, const char *msg, unsigned len_msg)
       input_check_cnt += i;
       if (input_check_cnt > 1500)
         {
-          for (Fe_iter i = const_cast<Fe_list&>(_fe).begin();
-               i != _fe.end(); ++i)
+          for (auto const &i : _fe)
             if (i->check_input())
               {
                 ob.printf("[Got input, stopping output.]\n");

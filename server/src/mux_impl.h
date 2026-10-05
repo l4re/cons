@@ -132,17 +132,15 @@ private:
   // Sink::write
   void write(char const *buf, unsigned size) const override
   {
-    for (Fe_iter i = const_cast<Fe_list&>(_fe).begin(); i != _fe.end(); ++i)
-      {
-        for (unsigned l = 0; l < size; )
-          {
-            int r = i->write(buf + l, size - l);
-            if (r < 0)
-              break;
+    for (auto const &i : _fe)
+      for (unsigned l = 0; l < size; )
+        {
+          int r = i->write(buf + l, size - l);
+          if (r < 0)
+            break;
 
-            l += r;
-          }
-      }
+          l += r;
+        }
   }
 
   Fe_list _fe;
