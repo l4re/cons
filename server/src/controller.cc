@@ -69,9 +69,12 @@ public:
     if ((*_client)->idx == 0)
       return (*_client)->tag().c_str();
 
-    snprintf((char *)buf.start(), buf.len(), "%s:%d",
-             (*_client)->tag().c_str(), (*_client)->idx);
-    return buf;
+    int n = snprintf(const_cast<char *>(buf.start()), buf.len(), "%s:%d",
+                     (*_client)->tag().c_str(), (*_client)->idx);
+    if (n < 0)
+      return cxx::String();
+
+    return cxx::String(buf.start(), cxx::min<int>(n, buf.len() - 1));
   }
 
   void next() override
