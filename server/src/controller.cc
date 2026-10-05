@@ -468,11 +468,15 @@ Controller::cmd_tail(Mux *mux, int argc, Arg *a)
 int
 Controller::cmd_timestamp(Mux *mux, int argc, Arg *a)
 {
-  Client *c = get_client(mux, argc, 1, a);
-  if (!c)
-    return 0;
+  if (argc < 3)
+    {
+      mux->printf("Usage: timestamp channel on|off\n");
+      return 0;
+    }
 
-  c->timestamp(a[2].a != "off");
+  if (Client *c = get_client(mux, argc, 1, a))
+    c->timestamp(a[2].a != "off");
+
   return 0;
 }
 
