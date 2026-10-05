@@ -454,7 +454,10 @@ Mux_i::handle_vcon_input(cxx::String const &buf)
         do_trigger |= inject_to_read_buffer(buf[i]);
 
       if (do_trigger)
-        _connected->trigger();
+        {
+          _connected->trigger();
+          do_trigger = false;
+        }
     }
 }
 
